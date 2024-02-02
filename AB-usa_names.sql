@@ -105,21 +105,55 @@ ORDER BY name_gender_count DESC
 ) AS SUBQUERY
 GROUP BY name_gender_count;
 -- There are 10,773 unisex names and 87,627 names that only appear for one gender.
--- This means that ~12.3% of the names are unisex.
+-- This means that ~10.95% of the names are unisex.
 
 -- 15. How many names have made an appearance in every single year since 1880?
-
+SELECT COUNT(num_years_appeared)
+FROM
+(
+SELECT name, COUNT(DISTINCT(year)) AS num_years_appeared
+FROM names
+GROUP BY name
+ORDER BY num_years_appeared DESC
+) AS SUBQUERY
+WHERE num_years_appeared = 139;
+-- 921 names appeared in every single year since 1880
 
 -- 16. How many names have only appeared in one year?
-
+SELECT COUNT(num_years_appeared)
+FROM
+(
+SELECT name, COUNT(DISTINCT(year)) AS num_years_appeared
+FROM names
+GROUP BY name
+ORDER BY num_years_appeared DESC
+) AS SUBQUERY
+WHERE num_years_appeared = 1;
+-- 21,123 names appeared in only one year.
 
 -- 17. How many names only appeared in the 1950s?
-
+SELECT name, COUNT(DISTINCT(name))
+FROM names
+GROUP BY name
+HAVING MAX(year)=1959 AND MIN(year) = 1950;
+-- Just 2 names only appeared in the 1950s: Leartis and Stevphen.
 
 -- 18. How many names made their first appearance in the 2010s?
-
+SELECT COUNT(name)
+FROM
+(
+SELECT name, COUNT(DISTINCT(name)) AS name_count_2010s
+FROM names
+GROUP BY name
+HAVING MIN(year) = 2010
+) AS SUBQUERY;
+--1,504 names made their first appearance in the 2010s.
 
 -- 19. Find the names that have not be used in the longest.
-
+SELECT name, MAX(year)
+FROM names
+GROUP BY name
+ORDER BY MAX(year);
+-- The names "Zilpah" and "Roll" both have not been used since 1881.
 
 -- 20. Come up with a question that you would like to answer using this dataset. Then write a query to answer this question.
