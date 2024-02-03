@@ -132,22 +132,26 @@ WHERE num_years_appeared = 1;
 -- 21,123 names appeared in only one year.
 
 -- 17. How many names only appeared in the 1950s?
-SELECT name, COUNT(DISTINCT(name))
+SELECT COUNT(name)
+FROM
+(
+SELECT name, MIN(year) AS first_year
 FROM names
 GROUP BY name
-HAVING MAX(year)=1959 AND MIN(year) = 1950;
--- Just 2 names only appeared in the 1950s: Leartis and Stevphen.
+HAVING MAX(year)<=1959 AND MIN(year) >= 1950
+) AS SUBQUERY;
+-- 661 names only appeared in the 1950s.
 
 -- 18. How many names made their first appearance in the 2010s?
 SELECT COUNT(name)
 FROM
 (
-SELECT name, COUNT(DISTINCT(name)) AS name_count_2010s
+SELECT name, MIN(year) AS first_year
 FROM names
 GROUP BY name
-HAVING MIN(year) = 2010
+HAVING MIN(year) >= 2010
 ) AS SUBQUERY;
---1,504 names made their first appearance in the 2010s.
+--11,270 names made their first appearance in the 2010s.
 
 -- 19. Find the names that have not be used in the longest.
 SELECT name, MAX(year)
@@ -157,3 +161,4 @@ ORDER BY MAX(year);
 -- The names "Zilpah" and "Roll" both have not been used since 1881.
 
 -- 20. Come up with a question that you would like to answer using this dataset. Then write a query to answer this question.
+
